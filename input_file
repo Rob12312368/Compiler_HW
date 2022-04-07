@@ -1,2 +1,7 @@
-print	default
-
+var a int32 = 3
+var b int32
+println(a) /* print a */
+b += 10 // Hello world
+for a < b {
+a++
+}

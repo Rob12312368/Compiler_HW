@@ -24,27 +24,29 @@ return printf("%-13sRETURN\n",yytext);
 switch printf("%-13sSWITCH\n",yytext);
 case printf("%-13sCASE\n",yytext);
 default printf("%-13sDEFAULT\n",yytext);
-"+" printf("%-13sADD\n",yytext);
-"-" printf("%-13sSUB\n",yytext);
-"*" printf("%-13sMUL\n",yytext);
-"/" printf("%-13sQUO\n",yytext);
-"%" printf("%-13sREM\n",yytext);
 "++" printf("%-13sINC\n",yytext);
+"+=" printf("%-13sADD_ASSIGN\n",yytext);
 "--" printf("%-13sDEC\n",yytext);
-">" printf("%-13sGTR\n",yytext);
-"<" printf("%-13sLSS\n",yytext);
+"-=" printf("%-13sSUB_ASSIGN\n",yytext);
 ">=" printf("%-13sGEQ\n",yytext);
 "<=" printf("%-13sLEQ\n",yytext);
 "==" printf("%-13sEQL\n",yytext);
 "!=" printf("%-13sNEQ\n",yytext);
-"=" printf("%-13sASSIGN\n",yytext);
-"+=" printf("%-13sADD_ASSIGN\n",yytext);
-"-=" printf("%-13sSUB_ASSIGN\n",yytext);
 "*=" printf("%-13sMUL_ASSIGN\n",yytext);
 "/=" printf("%-13sQUO_ASSIGN\n",yytext);
 "%=" printf("%-13sREM_ASSIGN\n",yytext);
 "&&" printf("%-13sLAND\n",yytext);
 "||" printf("%-13sLOR\n",yytext);
+"+" printf("%-13sADD\n",yytext);
+"-" printf("%-13sSUB\n",yytext);
+"*" printf("%-13sMUL\n",yytext);
+\/\/.* {printf("%-13sC++ COMMENT\n",yytext); comment_count++;}
+\/\*.*\*\/ {printf("%-13sC COMMENT\n",yytext); comment_count++;}
+"/" printf("%-13sQUO\n",yytext);
+"%" printf("%-13sREM\n",yytext);
+">" printf("%-13sGTR\n",yytext);
+"<" printf("%-13sLSS\n",yytext);
+"=" printf("%-13sASSIGN\n",yytext);
 "!" printf("%-13sNOT\n",yytext);
 "(" printf("%-13sLPAREN\n",yytext);
 ")" printf("%-13sRPAREN\n",yytext);
@@ -55,8 +57,12 @@ default printf("%-13sDEFAULT\n",yytext);
 ";" printf("%-13sSEMICOLON\n",yytext);
 "," printf("%-13sCOMMA\n",yytext);
 "\"" printf("%-13sQUOTA\n",yytext);
-"\n" printf("%-13sNEWLINE\n",yytext);
+"\n" {printf("             NEWLINE\n"); line_count++;}
 ":" printf("%-13sCOLON\n",yytext);
+[a-zA-Z_]([a-zA-Z0-9_])* printf("%-13sIDENT\n",yytext);
+([0-9])+\.([0-9])+ printf("%-13sFLOAT_LIT\n",yytext);
+([0-9])+ printf("%-13sINT_LIT\n",yytext);
+\".*\" printf("%-13sSTRING_LIT\n",yytext);
 %%
 main(int argc, char* argv[]) {
     FILE *fh;
@@ -64,5 +70,8 @@ main(int argc, char* argv[]) {
     if (argc == 2 && (fh = fopen(argv[1], "r")))
         yyin = fh;
     yylex();
+    printf("Finish scanning,\n");
+    printf("total line: %d\n",line_count);
+    printf("comment line: %d",comment_count);
     return 0;
 }
